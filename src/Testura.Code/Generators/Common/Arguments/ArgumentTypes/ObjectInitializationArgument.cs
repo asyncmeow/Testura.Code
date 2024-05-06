@@ -30,8 +30,11 @@ public class ObjectInitializationArgument : Argument
     protected override ArgumentSyntax CreateArgumentSyntax()
     {
         var syntaxNodeOrTokens = new List<SyntaxNodeOrToken>();
-        foreach (var (key, value) in _dictionary)
+        foreach (var pair in _dictionary)
         {
+            var key = pair.Key;
+            var value = pair.Value;
+
             syntaxNodeOrTokens.Add(
                 AssignmentExpression(
                     SyntaxKind.SimpleAssignmentExpression,
