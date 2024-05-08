@@ -106,7 +106,7 @@ public class ModelClassTests
             .Build();
 
         Assert.AreEqual(
-            "usingSystem;namespaceModels{publicclassCat{#region MyRegion \r\npublicstringName{get;set;}#endregion}}",
+            "usingSystem;namespaceModels{publicclassCat{#region MyRegion \npublicstringName{get;set;}#endregion}}",
             @class.ToString());
     }
 
@@ -133,8 +133,8 @@ public class ModelClassTests
             .Build();
 
         Assert.AreEqual(
-            "usingSystem;namespaceModels{publicclassCat{#region MyRegion \r\nprivatestring_name;privateint_age;publicstringName{get;set;}publicCat(stringname,intage){Name=name;Age=age;}#endregion}}",
-            @class.ToString());
+            "usingSystem;namespaceModels{publicclassCat{#region MyRegion \r\nprivatestring_name;privateint_age;publicstringName{get;set;}publicCat(stringname,intage){Name=name;Age=age;}#endregion}}".RemoveWhitespace(),
+            @class.ToString().RemoveWhitespace());
     }
 
     [Test]
@@ -150,8 +150,8 @@ public class ModelClassTests
             .Build();
 
         Assert.AreEqual(
-            "usingSystem;namespaceModels{publicclassCat{/// <summary>\r\n/// Some summary\r\n/// </summary>\r\n/// <param name=\"MyParameter\">Some documentation</param>\r\nvoidMyMethod(stringMyParameter){}}}",
-            @class.ToString());
+            "usingSystem;namespaceModels{publicclassCat{/// <summary>\r\n/// Some summary\r\n/// </summary>\r\n/// <param name=\"MyParameter\">Some documentation</param>\r\nvoidMyMethod(stringMyParameter){}}}".RemoveWhitespace(),
+            @class.ToString().RemoveWhitespace());
     }
 
     [Test]
@@ -182,8 +182,8 @@ public class ModelClassTests
             .Build();
 
         Assert.AreEqual(
-            "usingSystem;namespaceModels{/// <summary>\r\n/// My class summary\r\n/// </summary>\r\npublicclassCat{/// <summary>\r\n/// MyConstructor summary\r\n/// </summary>\r\n/// <param name=\"age\">My parameter</param>\r\npublicCat(stringname,intage){Name=name;Age=age;}/// <summary>\r\n/// MyPropertySummary\r\n/// </summary>\r\nintMyProperty{get;set;}/// <summary>\r\n/// My field summary\r\n/// </summary>\r\nprivatestring_name;voidMyMethod(stringMyParameter){//hej\r\ninthello;inthello; //My comment to the side\r\n}}}",
-            @class.ToString());
+            "usingSystem;namespaceModels{/// <summary>\r\n/// My class summary\r\n/// </summary>\r\npublicclassCat{/// <summary>\r\n/// MyConstructor summary\r\n/// </summary>\r\n/// <param name=\"age\">My parameter</param>\r\npublicCat(stringname,intage){Name=name;Age=age;}/// <summary>\r\n/// MyPropertySummary\r\n/// </summary>\r\nintMyProperty{get;set;}/// <summary>\r\n/// My field summary\r\n/// </summary>\r\nprivatestring_name;voidMyMethod(stringMyParameter){//hej\r\ninthello;inthello; //My comment to the side\r\n}}}".RemoveWhitespace(),
+            @class.ToString().RemoveWhitespace());
     }
 
     [Test]
@@ -203,8 +203,8 @@ public class ModelClassTests
             .Build();
 
         Assert.AreEqual(
-            "usingSystem;namespaceModels{publicclassCat{publicstaticMyMethodoperator++(stringMyParameter){//hej\r\ninthello;inthello; //My comment to the side\r\n}}}",
-            @class.ToString());
+            "usingSystem;namespaceModels{publicclassCat{publicstaticMyMethodoperator++(stringMyParameter){//hej\r\ninthello;inthello; //My comment to the side\r\n}}}".RemoveWhitespace(),
+            @class.ToString().RemoveWhitespace());
     }
 
     [Test]
