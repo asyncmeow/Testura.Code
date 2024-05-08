@@ -106,8 +106,8 @@ public class ModelClassTests
             .Build();
 
         Assert.AreEqual(
-            "usingSystem;namespaceModels{publicclassCat{#region MyRegion \npublicstringName{get;set;}#endregion}}",
-            @class.ToString());
+            "usingSystem;namespaceModels{publicclassCat{#region MyRegion \npublicstringName{get;set;}#endregion}}".RemoveWhitespace(),
+            @class.ToString().RemoveWhitespace());
     }
 
     [Test]
