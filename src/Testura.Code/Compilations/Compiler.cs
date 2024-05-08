@@ -11,7 +11,6 @@ namespace Testura.Code.Compilations;
 /// </summary>
 public class Compiler : ICompiler
 {
-    private readonly string _runtimeDirectory;
     private readonly string[] _referencedAssemblies;
     private readonly IEnumerable<string> _defaultNamespaces;
 
@@ -19,11 +18,9 @@ public class Compiler : ICompiler
     /// Initializes a new instance of the <see cref="Compiler"/> class.
     /// </summary>
     /// <param name="referencedAssemblies">Path to all required external assemblies.</param>
-    /// <param name="runtimeDirectory">Path to the .NET framework directory.</param>
-    public Compiler(string[] referencedAssemblies = null, string runtimeDirectory = null)
+    public Compiler(string[]? referencedAssemblies = null)
     {
-        _referencedAssemblies = referencedAssemblies ?? new string[0];
-        _runtimeDirectory = runtimeDirectory ?? @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\";
+        _referencedAssemblies = referencedAssemblies ?? Array.Empty<string>();
         _defaultNamespaces = new[]
         {
             "System",
@@ -109,7 +106,7 @@ public class Compiler : ICompiler
             var compilation = CSharpCompilation.Create(
                 string.IsNullOrEmpty(outputPath) ? "temporary" : Path.GetFileName(outputPath),
                 parsedSyntaxTrees,
-                ConvertReferenceToMetaDataReferfence(),
+                ConvertReferenceToMetadataReference(),
                 defaultCompilationOptions);
 
             EmitResult result;
@@ -147,19 +144,34 @@ public class Compiler : ICompiler
         return outputRows;
     }
 
-    private IEnumerable<MetadataReference> ConvertReferenceToMetaDataReferfence()
+    private IEnumerable<MetadataReference> ConvertReferenceToMetadataReference()
     {
-        List<MetadataReference> metaData = new List<MetadataReference>();
+        var metadata = new List<MetadataReference>();
         foreach (var reference in _referencedAssemblies)
         {
-            metaData.Add(MetadataReference.CreateFromFile(reference));
+            metadata.Add(MetadataReference.CreateFromFile(reference));
         }
 
-        // Add default references
-        metaData.Add(MetadataReference.CreateFromFile(Path.Combine(_runtimeDirectory, "mscorlib.dll")));
-        metaData.Add(MetadataReference.CreateFromFile(Path.Combine(_runtimeDirectory, "System.dll")));
-        metaData.Add(MetadataReference.CreateFromFile(Path.Combine(_runtimeDirectory, "System.Core.dll")));
-        return metaData;
+        // Instead of the old system for assuming the given DLLs such as System.dll and System.Core.dll
+        // are always present (which is not true under newer .NET versions), we instead have a list of
+        // types we get the assembly paths of and use those as references.
+        // The list here should cover the basics from the namespaces listed up above.
+        var expectedTypes = new Type[]
+        {
+            typeof(object),
+            typeof(File),
+            typeof(System.Net.EndPoint),
+            typeof(Enumerable),
+            typeof(Encoding),
+            typeof(System.Text.RegularExpressions.Regex),
+            typeof(List<>)
+        };
+        var assemblies = expectedTypes
+            .Select(type => type.Assembly.Location)
+            .Distinct()
+            .Select(assembly => MetadataReference.CreateFromFile(assembly));
+        metadata.AddRange(assemblies);
+        return metadata;
     }
 
     private SyntaxTree Parse(string text, CSharpParseOptions options = null)
