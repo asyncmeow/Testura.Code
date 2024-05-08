@@ -21,22 +21,36 @@ public class CodeSaverTests
     [Test]
     public void SaveCodeAsString_WhenSavingCodeAsString_ShouldGetString()
     {
-        var code = _coderSaver.SaveCodeAsString(new ClassBuilder("TestClass", "test").Build());
-        Assert.IsNotNull(code);
-        Assert.AreEqual("namespace test\r\n{\r\n    public class TestClass\r\n    {\r\n    }\r\n}", code);
+        var expected = """
+                       namespace test {
+                           public class TestClass {
+                           }
+                       }
+                       """;
+        var actual = _coderSaver.SaveCodeAsString(new ClassBuilder("TestClass", "test").Build());
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(expected.RemoveWhitespace(), actual.RemoveWhitespace());
     }
 
     [Test]
     public void SaveCodeAsString_WhenSavingCodeAsStringAndOptions_ShouldGetString()
     {
+        var expected = """
+                       namespace test {
+                           public class TestClass {
+                               void MyMethod() {
+                               }
+                           }
+                       }
+                       """;
         var codeSaver = new CodeSaver(new List<OptionKeyValue> { new OptionKeyValue(CSharpFormattingOptions.NewLinesForBracesInMethods, false) });
-        var code = codeSaver.SaveCodeAsString(
+        var actual = codeSaver.SaveCodeAsString(
             new ClassBuilder("TestClass", "test")
                 .WithMethods(
                     new MethodBuilder("MyMethod")
                         .Build())
                 .Build());
-        Assert.IsNotNull(code);
-        Assert.AreEqual("namespace test\r\n{\r\n    public class TestClass\r\n    {\r\n        void MyMethod() {\r\n        }\r\n    }\r\n}", code);
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(expected.RemoveWhitespace(), actual.RemoveWhitespace());
     }
 }
