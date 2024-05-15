@@ -3,7 +3,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Testura.Code.Builders.Base;
 using Testura.Code.Builders.BuildMembers;
 using Testura.Code.Generators.Class;
+using Testura.Code.Generators.Common;
 using Testura.Code.Models;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Testura.Code.Builders;
 
@@ -12,6 +14,8 @@ namespace Testura.Code.Builders;
 /// </summary>
 public class ClassBuilder : TypeBuilderBase<ClassBuilder>
 {
+    private List<Parameter> _primaryConstructorParameters;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ClassBuilder"/> class.
     /// </summary>
@@ -53,8 +57,26 @@ public class ClassBuilder : TypeBuilderBase<ClassBuilder>
         return With(new ConstructorBuildMember(constructor));
     }
 
+    /// <summary>
+    /// Add primary constructor.
+    /// </summary>
+    /// <param name="parameters">Parameters in the constructor</param>
+    /// <returns>The current class builder</returns>
+    public ClassBuilder WithPrimaryConstructor(params Parameter[] parameters)
+    {
+        _primaryConstructorParameters = new List<Parameter>(parameters);
+        return this;
+    }
+
     protected override TypeDeclarationSyntax BuildBase()
     {
-        return SyntaxFactory.ClassDeclaration(Name).WithBaseList(CreateBaseList()).WithModifiers(CreateModifiers());
+        var decl = ClassDeclaration(Name).WithBaseList(CreateBaseList()).WithModifiers(CreateModifiers());
+        if (_primaryConstructorParameters != null && _primaryConstructorParameters.Any())
+        {
+            decl = decl.WithParameterList(
+                ParameterGenerator.Create(_primaryConstructorParameters.ToArray()));
+        }
+
+        return decl;
     }
 }

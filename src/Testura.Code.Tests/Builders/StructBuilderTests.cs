@@ -71,4 +71,11 @@ public class StructBuilderTests
     {
         Assert.IsTrue(_structBuilder.ThatInheritFrom(typeof(int)).Build().ToString().Contains("TestStruct:int"));
     }
+
+    [Test]
+    public void Build_WhenGivenPrimaryConstructor_CodeShouldContainPrimaryConstructor()
+    {
+        Assert.IsTrue(_structBuilder.WithPrimaryConstructor(new Parameter("size", typeof(int)))
+            .Build().ToString().Contains("TestStruct(intsize)"));
+    }
 }
