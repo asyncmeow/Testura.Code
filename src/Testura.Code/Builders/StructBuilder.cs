@@ -75,23 +75,8 @@ public class StructBuilder : TypeBuilderBase<StructBuilder>
         {
             decl = decl.WithParameterList(
                 ParameterGenerator.Create(_primaryConstructorParameters.ToArray()));
-            if (HaveMembers)
-            {
-                decl = decl.WithOpenBraceToken(
-                    Token(SyntaxKind.OpenBraceToken));
-            }
         }
 
         return decl;
-    }
-
-    protected override TypeDeclarationSyntax FinishBase(TypeDeclarationSyntax type)
-    {
-        if (HaveMembers)
-        {
-            return type.WithCloseBraceToken(Token(SyntaxKind.CloseBraceToken));
-        }
-
-        return type.WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
     }
 }

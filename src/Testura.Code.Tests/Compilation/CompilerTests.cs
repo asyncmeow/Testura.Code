@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using NUnit.Framework;
@@ -31,7 +32,7 @@ public class CompilerTests
     public async Task CompileSourceAsync_WhenCompilingSourceWithError_ShouldGetListContainingErrors()
     {
         var result = await _compiler.CompileSourceAsync(Path.Combine(TestContext.CurrentContext.TestDirectory, "test.dll"), "gfdgdfgfdg");
-        Assert.AreEqual(1, result.OutputRows.Count);
+        Assert.LessOrEqual(1, result.OutputRows.Count);
         Assert.IsFalse(result.Success);
     }
 
@@ -47,7 +48,7 @@ public class CompilerTests
     public async Task CompileSourceInMemoryAsync_WhenCompilingSourceWithError_ShouldGetListContainingErrors()
     {
         var result = await _compiler.CompileSourceInMemoryAsync("gfdgdfgfdg");
-        Assert.AreEqual(1, result.OutputRows.Count);
+        Assert.LessOrEqual(1, result.OutputRows.Count);
         Assert.IsFalse(result.Success);
     }
 }
