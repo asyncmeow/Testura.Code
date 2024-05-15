@@ -61,7 +61,7 @@ public class StructBuilder : TypeBuilderBase<StructBuilder>
     /// Add primary constructor.
     /// </summary>
     /// <param name="parameters">Parameters in the constructor</param>
-    /// <returns>The current class builder</returns>
+    /// <returns>The current struct builder</returns>
     public StructBuilder WithPrimaryConstructor(params Parameter[] parameters)
     {
         _primaryConstructorParameters = new List<Parameter>(parameters);
